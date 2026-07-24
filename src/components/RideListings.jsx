@@ -59,7 +59,7 @@ const RideListings = () => {
 
       <div className="row g-3">
         {rides.map((ride) => (
-          <div key={ride.id || ride.rideId} className="col-12 col-md-6 col-lg-4">
+          <div key={ride._id || ride.id} className="col-12 col-md-6 col-lg-4">
             <div className="card h-100 border-0 shadow-sm hover-shadow">
               <div className="card-header bg-white border-0 pt-3 d-flex justify-content-between align-items-center">
                 <span className="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
@@ -86,8 +86,8 @@ const RideListings = () => {
                 </div>
               </div>
               <div className="card-footer bg-light border-0 d-flex justify-content-between align-items-center py-3">
-                <span className="badge bg-success px-2 py-1">
-                  {ride.availableSeats} seat(s) left
+                <span className={`badge ${ride.availableSeats > 0 ? 'bg-success' : 'bg-danger'} px-2 py-1`}>
+                  {ride.availableSeats > 0 ? `${ride.availableSeats} seat(s) left` : 'Fully Booked'}
                 </span>
                 <Link to="/book-ride" className="btn btn-outline-primary btn-sm fw-semibold">
                   Book Seat

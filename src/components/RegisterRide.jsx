@@ -25,7 +25,6 @@ const RegisterRide = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Field Validations
     if (
       !formData.driverName ||
       !formData.vehicleNumber ||
@@ -43,10 +42,13 @@ const RegisterRide = () => {
     }
 
     try {
-      await axios.post('http://localhost:3000/add-ride', formData);
+      await axios.post('http://localhost:3000/add-ride', {
+        ...formData,
+        availableSeats: Number(formData.availableSeats)
+      });
+      
       setAlert({ show: true, type: 'success', message: 'Ride successfully registered!' });
       
-      // Reset form on success
       setFormData({
         driverName: '',
         vehicleType: 'Car',

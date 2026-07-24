@@ -77,7 +77,7 @@ const Dashboard = () => {
                     <span className="text-muted small fw-bold text-uppercase">{card.title}</span>
                     <h2 className="fw-bold my-1">{card.value}</h2>
                     <Link to={card.link} className={`text-${card.color} text-decoration-none small fw-semibold`}>
-                      View details &rrArr;
+                      View details
                     </Link>
                   </div>
                   <div className={`p-3 bg-${card.color} bg-opacity-10 text-${card.color} rounded-circle`}>

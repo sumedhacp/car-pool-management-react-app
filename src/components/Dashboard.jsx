@@ -2,38 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-/**
- * Dashboard component displaying key metric cards and quick action links.
- */
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({
     totalRides: 0,
     activeDrivers: 0,
-    campusBuses: 6,
+    campusBuses: 0,
     popularRoutes: 4,
     dailyRequests: 0,
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch metrics dynamically from backend API
+
     const fetchDashboardData = async () => {
       try {
-        const [ridesRes, bookingsRes] = await Promise.allSettled([
+        const [ridesRes, bookingsRes, busesRes] = await Promise.allSettled([
           axios.get('http://localhost:3000/available-rides'),
           axios.get('http://localhost:3000/booking-summaries'),
+          axios.get('http://localhost:3000/campus-buses'),
         ]);
 
         const rides = ridesRes.status === 'fulfilled' ? ridesRes.value.data : [];
         const bookings = bookingsRes.status === 'fulfilled' ? bookingsRes.value.data : [];
+        const buses = busesRes.status === 'fulfilled' ? busesRes.value.data : [];
 
-        // Calculate unique drivers
-        const uniqueDrivers = new Set(rides.map((r) => r.driverName)).size;
+        const uniqueDrivers = new Set(
+          rides.map((r) => r?.driverName).filter(Boolean)
+        ).size;
 
         setMetrics((prev) => ({
           ...prev,
           totalRides: rides.length,
           activeDrivers: uniqueDrivers,
+          campusBuses: buses.length,
           dailyRequests: bookings.length,
         }));
       } catch (error) {

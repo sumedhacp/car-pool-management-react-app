@@ -14,13 +14,7 @@ const CampusTransport = () => {
         const response = await axios.get('http://localhost:3000/campus-buses');
         setBuses(response.data);
       } catch (error) {
-        // Fallback default sample data if endpoint is unpopulated
-        setBuses([
-          { id: 1, busNumber: 'B-101', route: 'Hostel Block A -> Main Academic Building', departureTime: '08:15 AM', status: 'On Time' },
-          { id: 2, busNumber: 'B-102', route: 'South Campus Gate -> Library Square', departureTime: '08:45 AM', status: 'On Time' },
-          { id: 3, busNumber: 'B-103', route: 'North Gate -> Tech Park Campus', departureTime: '09:15 AM', status: 'Delayed 5 mins' },
-          { id: 4, busNumber: 'B-104', route: 'Sports Complex -> Main Gate Metro', departureTime: '05:30 PM', status: 'On Time' },
-        ]);
+        console.error('Error fetching bus schedules:', error);
       } finally {
         setLoading(false);
       }
@@ -40,6 +34,11 @@ const CampusTransport = () => {
         <div className="text-center py-5">
           <div className="spinner-border text-info" role="status"></div>
         </div>
+      ) : buses.length === 0 ? (
+        <div className="text-center py-5 bg-light rounded shadow-sm">
+          <i className="bi bi-bus-front fs-1 text-muted"></i>
+          <p className="mt-3 text-muted mb-0">No campus bus schedules available.</p>
+        </div>
       ) : (
         <div className="card border-0 shadow-sm">
           <div className="card-body p-0">
@@ -55,7 +54,7 @@ const CampusTransport = () => {
                 </thead>
                 <tbody>
                   {buses.map((bus) => (
-                    <tr key={bus.id}>
+                    <tr key={bus._id || bus.id}>
                       <td className="px-4 fw-bold text-primary">
                         <i className="bi bi-bus-front me-2"></i>
                         {bus.busNumber}
@@ -65,10 +64,10 @@ const CampusTransport = () => {
                       <td className="px-4 text-end">
                         <span
                           className={`badge ${
-                            bus.status.includes('Delayed') ? 'bg-warning text-dark' : 'bg-success'
+                            bus.status && bus.status.includes('Delayed') ? 'bg-warning text-dark' : 'bg-success'
                           }`}
                         >
-                          {bus.status}
+                          {bus.status || 'On Time'}
                         </span>
                       </td>
                     </tr>

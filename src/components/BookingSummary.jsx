@@ -46,20 +46,24 @@ const BookingSummary = () => {
               <table className="table table-striped align-middle mb-0">
                 <thead className="table-dark">
                   <tr>
-                    <th className="py-3 px-4">Booking ID</th>
+                    <th className="py-3 px-4">Booking Ref</th>
                     <th className="py-3">Passenger Name</th>
-                    <th className="py-3">Ride Ref ID</th>
+                    <th className="py-3">Ride ID</th>
                     <th className="py-3">Seats Requested</th>
-                    <th className="py-3 px-4 text-end">Contact</th>
+                    <th className="py-3 px-4 text-end">Contact Number</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bookings.map((booking, index) => (
-                    <tr key={booking.id || index}>
-                      <td className="px-4 fw-semibold text-muted">#{booking.id || index + 101}</td>
+                    <tr key={booking._id || index}>
+                      <td className="px-4 fw-semibold text-muted">
+                        #{booking._id ? booking._id.slice(-6).toUpperCase() : index + 101}
+                      </td>
                       <td className="fw-bold">{booking.passengerName}</td>
                       <td>
-                        <span className="badge bg-secondary">Ride #{booking.rideId}</span>
+                        <span className="badge bg-secondary">
+                          Ride #{booking.rideId ? booking.rideId.slice(-6) : 'N/A'}
+                        </span>
                       </td>
                       <td>{booking.seatsRequired} seat(s)</td>
                       <td className="px-4 text-end text-muted">{booking.contactNumber}</td>

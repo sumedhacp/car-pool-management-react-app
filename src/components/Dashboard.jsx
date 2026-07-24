@@ -13,7 +13,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     const fetchDashboardData = async () => {
       try {
         const [ridesRes, bookingsRes, busesRes] = await Promise.allSettled([
@@ -78,7 +77,7 @@ const Dashboard = () => {
                     <span className="text-muted small fw-bold text-uppercase">{card.title}</span>
                     <h2 className="fw-bold my-1">{card.value}</h2>
                     <Link to={card.link} className={`text-${card.color} text-decoration-none small fw-semibold`}>
-                      View details &rarr;
+                      View details &rrArr;
                     </Link>
                   </div>
                   <div className={`p-3 bg-${card.color} bg-opacity-10 text-${card.color} rounded-circle`}>
@@ -91,7 +90,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Quick Actions Panel */}
       <div className="row mt-4">
         <div className="col-12">
           <div className="card border-0 shadow-sm bg-light">

@@ -16,7 +16,6 @@ const BookPassengerings = () => {
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
   useEffect(() => {
-    // Fetch ride list to populate ride selector
     axios
       .get('http://localhost:3000/available-rides')
       .then((res) => setAvailableRides(res.data))
@@ -31,15 +30,15 @@ const BookPassengerings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const selectedRide = availableRides.find((r) => String(r.id) === String(formData.rideId));
+    const selectedRide = availableRides.find(
+      (r) => String(r._id || r.id) === String(formData.rideId)
+    );
 
-    // Validations
     if (!formData.rideId || !formData.passengerName || !formData.contactNumber) {
       setAlert({ show: true, type: 'danger', message: 'Please fill in all mandatory fields.' });
       return;
     }
 
-    // Phone number verification (10 digits standard)
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(formData.contactNumber)) {
       setAlert({ show: true, type: 'danger', message: 'Please enter a valid 10-digit contact number.' });
@@ -56,7 +55,11 @@ const BookPassengerings = () => {
     }
 
     try {
-      await axios.post('http://localhost:3000/book-ride', formData);
+      await axios.post('http://localhost:3000/book-ride', {
+        ...formData,
+        seatsRequired: Number(formData.seatsRequired),
+      });
+
       setAlert({ show: true, type: 'success', message: 'Booking confirmed successfully!' });
 
       setFormData({
@@ -65,6 +68,9 @@ const BookPassengerings = () => {
         contactNumber: '',
         seatsRequired: 1,
       });
+
+      const updatedRides = await axios.get('http://localhost:3000/available-rides');
+      setAvailableRides(updatedRides.data);
     } catch (err) {
       setAlert({ show: true, type: 'danger', message: 'Failed to process booking.' });
       console.error(err);
@@ -100,11 +106,13 @@ const BookPassengerings = () => {
                     required
                   >
                     <option value="">-- Choose a Route --</option>
-                    {availableRides.map((ride) => (
-                      <option key={ride.id} value={ride.id}>
-                        {ride.pickupLocation} to {ride.destination} ({ride.driverName} - {ride.departureTime})
-                      </option>
-                    ))}
+                    {availableRides
+                      .filter((ride) => ride.availableSeats > 0)
+                      .map((ride) => (
+                        <option key={ride._id || ride.id} value={ride._id || ride.id}>
+                          {ride.pickupLocation} to {ride.destination} ({ride.driverName} - {ride.departureTime}) - [{ride.availableSeats} seats left]
+                        </option>
+                      ))}
                   </select>
                 </div>
 
